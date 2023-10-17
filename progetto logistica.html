@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ottimizzazione logistica</title>
+        <style>
+            table,
+            th,
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            function scriviTabella(tabella) {
+                const elemento = document.getElementById("tabellaOut");
+                let testo = "";
+                testo += "<table><tr><th></th>";
+                for (let j = 0; j < tabella[0].length - 1; j++) {
+                    testo += "<th>D" + (j + 1) + "</th>";
+                }
+                testo += "<th>TOT</th>";
+                testo += "</tr>";
+                for (let i = 0; i < tabella.length; i++) {
+                    if (i + 1 == tabella.length) {
+                        testo += "<tr><th>TOT</th>";
+                    } else {
+                        testo += "<tr><th>UP" + (i + 1) + "</th>";
+                    }
+                    for (let j = 0; j < tabella[0].length; j++) {
+                        testo += "<td>" + tabella[i][j] + "</td>";
+                    }
+                    testo += "</tr>";
+                }
+                testo += "</table>";
+                elemento.innerHTML = testo;
+                document.body.appendChild(elemento);
+            }
+
+            function aggiungiRiga(tabella) {
+                let ultimaRiga = tabella.pop();
+                let nuovaRiga = [];
+                for (let i = 0; i < ultimaRiga.length - 1; i++) {
+                    nuovaRiga[i] = 999;
+                }
+                nuovaRiga[nuovaRiga.length] = totO - totV;
+                tabella.push(nuovaRiga);
+                tabella.push(ultimaRiga);
+            }
+
+            function aggiungiColonna(tabella) {
+                for (i = 0; i < tabella.length; i++) {
+                    let temp = tabella[i][tabella[i].length - 1];
+                    tabella[i][tabella[i].length - 1] = 999;
+                    tabella[i][tabella[i].length] = temp;
+                }
+                tabella[tabella.length - 1][
+                    tabella[tabella.length - 1].length - 2
+                ] = totV - totO;
+            }
+
+            var tot = 0;
+            let tabella = [
+                [80, 40, 20, 90, 100],
+                [150, 130, 20, 30, 200],
+                [40, 40, 10, 100, 300],
+                [50, 100, 200, 250, 0],
+            ];
+
+            let totV = 0;
+            for (i = 0; i < tabella.length - 1; i++) {
+                totV += tabella[i][tabella[i].length - 1];
+            }
+            document.write("totV = " + totV + "<br/>");
+            let totO = 0;
+            for (i = 0; i < tabella[0].length - 1; i++) {
+                totO += tabella[tabella.length - 1][i];
+            }
+            document.write("totO = " + totO + "<br/>");
+
+            if (totO > totV) {
+                document.write(
+                    "i totali non coincidono<br/>e' stata aggiunta una unita' produttiva fittizia<br/>"
+                );
+                aggiungiRiga(tabella);
+                tot = totO;
+            } else if (totV > totO) {
+                document.write(
+                    "i totali non coincidono<br/>e' stata aggiunta una destinazione fittizia<br/>"
+                );
+                aggiungiColonna(tabella);
+                tot = totV;
+            } else tot = totV;
+            tabella[tabella.length - 1][tabella[0].length - 1] = tot;
+            document.write("il totale e' " + tot + "<br/>");
+            console.log(tabella);
+        </script>
+
+        <button onclick="scriviTabella(tabella)">genera tabella</button>
+        <p id="tabellaOut"></p>
+    </body>
+</html>
