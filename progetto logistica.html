@@ -9,7 +9,7 @@
             table,
             th,
             td {
-                border: 1px solid black;
+                border: 1px solid rgb(0, 0, 0);
                 border-collapse: collapse;
             }
         </style>
@@ -75,12 +75,15 @@
             for (i = 0; i < tabella.length - 1; i++) {
                 totV += tabella[i][tabella[i].length - 1];
             }
-            document.write("totV = " + totV + "<br/>");
+
+            console.log("totV = " + totV + "<br/>");
+
             let totO = 0;
             for (i = 0; i < tabella[0].length - 1; i++) {
                 totO += tabella[tabella.length - 1][i];
             }
-            document.write("totO = " + totO + "<br/>");
+
+            console.log("totO = " + totO + "<br/>");
 
             if (totO > totV) {
                 document.write(
@@ -95,8 +98,9 @@
                 aggiungiColonna(tabella);
                 tot = totV;
             } else tot = totV;
+
             tabella[tabella.length - 1][tabella[0].length - 1] = tot;
-            document.write("il totale e' " + tot + "<br/>");
+            console.log("il totale e' " + tot + "<br/>");
             console.log(tabella);
         </script>
 
