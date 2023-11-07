@@ -41,6 +41,83 @@
                 document.body.appendChild(elemento);
             }
 
+            function copiaMatrice(matrice) {
+                let copia = [];
+                for (let i = 0; i < matrice.length; i++) {
+                    copia[i] = [...matrice[i]];
+                }
+                return copia;
+            }
+
+            function nordOvest(tabella) {
+                let table = copiaMatrice(tabella);
+                let ultimaRiga = table.pop();
+                let tot = ultimaRiga.pop();
+                let ultimaColonna = [];
+                for (i = 0; i < table.length; i++) {
+                    ultimaColonna[i] = table[i].pop();
+                }
+                console.log(ultimaRiga);
+                console.log(ultimaColonna);
+                console.log(table);
+                let costoTot = 0;
+                let riassunto = [];
+                let UP = 1;
+                let D = 1;
+                do {
+                    let costoParziale = 0;
+                    let quantita = 0;
+                    if (ultimaColonna[0] > ultimaRiga[0]) {
+                        //modifico il valore maggiore
+                        ultimaColonna[0] -= ultimaRiga[0];
+
+                        //inizializzo i valori per creare il riassunto
+                        quantita = ultimaRiga[0];
+                        costoParziale += table[0][0] * quantita;
+
+                        //cancello la riga
+                        ultimaRiga.shift();
+                        for (i = 0; i < table.length; i++) {
+                            table[i].shift();
+                        }
+                        //creo la riga del riassunto
+                        riassunto[riassunto.length] = [
+                            "quantita = " + quantita,
+                            "UP" + UP + "=>D" + D,
+                            "costo = " + costoParziale,
+                        ];
+
+                        UP++; //"sposto" la riga
+                    } else {
+                        //modifico il valore maggiore
+                        ultimaRiga[0] -= ultimaColonna[0];
+
+                        //inizializzo i valori per creare il riassunto
+                        quantita = ultimaColonna[0];
+                        costoParziale += table[0][0] * quantita;
+
+                        //cancello la colonna
+                        ultimaColonna.shift();
+                        table.shift();
+                        //creo la riga del riassunto
+                        riassunto[riassunto.length] = [
+                            "quantita = " + quantita,
+                            "UP" + UP + "=>D" + D,
+                            "costo = " + costoParziale,
+                        ];
+
+                        D++; //"sposto" la colonna
+                    }
+                    costoTot += costoParziale; //aggiorno il costo totale
+
+                    console.log(ultimaRiga);
+                    console.log(ultimaColonna);
+                    console.log(copiaMatrice(table));
+                    console.log(costoTot);
+                } while (table.length * table[0]?.length > 0);
+                console.log(riassunto);
+            }
+
             function aggiungiRiga(tabella) {
                 let ultimaRiga = tabella.pop();
                 let nuovaRiga = [];
@@ -105,6 +182,9 @@
         </script>
 
         <button onclick="scriviTabella(tabella)">genera tabella</button>
+        <p id="tabellaOut"></p>
+
+        <button onclick="nordOvest(tabella)">metodo nord ovest</button>
         <p id="tabellaOut"></p>
     </body>
 </html>
