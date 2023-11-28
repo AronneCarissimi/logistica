@@ -16,8 +16,8 @@
     </head>
     <body>
         <script>
-            function scriviTabella(tabella) {
-                const elemento = document.getElementById("tabellaOut");
+            function scriviTabella(tabella, element) {
+                const elemento = document.getElementById(element);
                 let testo = "";
                 testo += "<table><tr><th></th>";
                 for (let j = 0; j < tabella[0].length - 1; j++) {
@@ -41,6 +41,22 @@
                 document.body.appendChild(elemento);
             }
 
+            function scriviReport(report, tot, element) {
+                const elemento = document.getElementById(element);
+                let testo = "";
+                let tabella = copiaMatrice(report);
+                testo += "<table><tr>";
+                for (let i = 0; i < tabella.length; i++) {
+                    for (let j = 0; j < tabella[0].length; j++) {
+                        testo += "<td>" + tabella[i][j] + "</td>";
+                    }
+                    testo += "</tr>";
+                }
+                testo += "</table>";
+                elemento.innerHTML = testo;
+                document.body.appendChild(elemento);
+            }
+
             function copiaMatrice(matrice) {
                 let copia = [];
                 for (let i = 0; i < matrice.length; i++) {
@@ -49,7 +65,7 @@
                 return copia;
             }
 
-            function nordOvest(tabella) {
+            function nordOvest(tabella, element) {
                 let table = copiaMatrice(tabella);
                 let ultimaRiga = table.pop();
                 let tot = ultimaRiga.pop();
@@ -82,7 +98,7 @@
                         }
                         //creo la riga del riassunto
                         riassunto[riassunto.length] = [
-                            "quantita = " + quantita,
+                            "quantita' = " + quantita,
                             "UP" + UP + "=>D" + D,
                             "costo = " + costoParziale,
                         ];
@@ -101,7 +117,7 @@
                         table.shift();
                         //creo la riga del riassunto
                         riassunto[riassunto.length] = [
-                            "quantita = " + quantita,
+                            "quantita' = " + quantita,
                             "UP" + UP + "=>D" + D,
                             "costo = " + costoParziale,
                         ];
@@ -116,6 +132,7 @@
                     console.log(costoTot);
                 } while (table.length * table[0]?.length > 0);
                 console.log(riassunto);
+                scriviReport(riassunto, costoTot, element);
             }
 
             function aggiungiRiga(tabella) {
@@ -181,10 +198,14 @@
             console.log(tabella);
         </script>
 
-        <button onclick="scriviTabella(tabella)">genera tabella</button>
+        <button onclick="scriviTabella(tabella,'tabellaOut')">
+            genera tabella
+        </button>
         <p id="tabellaOut"></p>
 
-        <button onclick="nordOvest(tabella)">metodo nord ovest</button>
-        <p id="tabellaOut"></p>
+        <button onclick="nordOvest(tabella,'giorgio')">
+            metodo nord ovest
+        </button>
+        <p id="giorgio"></p>
     </body>
 </html>
