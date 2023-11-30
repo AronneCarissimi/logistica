@@ -126,10 +126,7 @@
                     }
                     costoTot += costoParziale; //aggiorno il costo totale
 
-                    console.log(ultimaRiga);
-                    console.log(ultimaColonna);
                     console.log(copiaMatrice(table));
-                    console.log(costoTot);
                 } while (table.length * table[0]?.length > 0);
                 console.log(riassunto);
                 scriviReport(riassunto, costoTot, element);
