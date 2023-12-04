@@ -12,11 +12,17 @@
                 border: 1px solid rgb(0, 0, 0);
                 border-collapse: collapse;
             }
+            .francesco {
+                display: inline-block;
+                border: 1px solid rgb(0, 0, 0);
+                padding: 1px;
+            }
             .container {
                 display: inline-block;
-                padding: 1rem;
                 border: 1px solid rgb(0, 0, 0);
+                padding: 1rem;
                 vertical-align: top;
+                height: auto;
             }
         </style>
     </head>
@@ -199,14 +205,20 @@
                 for (let i = 0; i < table[0].length; i++) {
                     D[i] = i + 1;
                 }
-                let uPr;
-                let dest;
+                console.log(copiaMatrice(table));
+                console.log("UP");
+                console.log(...UP);
+                console.log("D");
+                console.log(...D);
                 do {
                     let costoParziale = 0;
                     let quantita = 0;
                     let temp = [];
                     let min = 0;
                     let riga;
+                    let colonna;
+                    var uPr;
+                    var dest;
                     for (let i = 0; i < table.length; i++) {
                         temp[i] = Math.min(...table[i]);
                         min = Math.min(...temp);
@@ -240,7 +252,7 @@
                         //cancello la riga
                         ultimaColonna.splice(riga, 1);
                         uPr = UP.splice(riga, 1);
-                        desr = D[colonna];
+                        dest = D[colonna];
                         table.splice(riga, 1);
                     } else if (ultimaRiga[colonna] == ultimaColonna[riga]) {
                         //inizializzo i valori per creare il riassunto
@@ -257,6 +269,7 @@
                         }
                         table.splice(riga, 1);
                     }
+
                     riassunto[riassunto.length] = [
                         quantita,
                         "UP" + uPr + "=>D" + dest,
@@ -291,8 +304,9 @@
                 ] = totV - totO;
             }
 
-            function elaboraTabella(tabella) {
+            function elaboraTabella(tabella, element) {
                 let totV = 0;
+                const elemento = document.getElementById(element);
                 for (i = 0; i < tabella.length - 1; i++) {
                     totV += tabella[i][tabella[i].length - 1];
                 }
@@ -307,19 +321,19 @@
                 console.log("totO = " + totO + "<br/>");
 
                 if (totO > totV) {
-                    console.log(
-                        "i totali non coincidono<br/>e' stata aggiunta una unita' produttiva fittizia<br/>"
-                    );
+                    elemento.innerHTML =
+                        "i totali non coincidono<br/>e' stata aggiunta una unita' produttiva fittizia<br/>";
                     aggiungiRiga(tabella, totO, totV);
                     tot = totO;
                 } else if (totV > totO) {
-                    console.log(
-                        "i totali non coincidono<br/>e' stata aggiunta una destinazione fittizia<br/>"
-                    );
+                    elemento.innerHTML =
+                        "i totali non coincidono<br/>e' stata aggiunta una destinazione fittizia<br/>";
                     aggiungiColonna(tabella, totO, totV);
                     tot = totV;
-                } else tot = totV;
-
+                } else {
+                    tot = totV;
+                    elemento.innerHTML = "";
+                }
                 tabella[tabella.length - 1][tabella[0].length - 1] = tot;
                 console.log("il totale e' " + tot + "<br/>");
                 console.log(tabella);
@@ -365,10 +379,12 @@
                             '" />';
                     }
                 }
-                scriviTabella(tabella, element, "roberto");
-                document.getElementById("roberto").innerHTML +=
+                scriviTabella(tabella, "roberto");
+                elemento.innerHTML =
                     '<button onclick="ottieniValori(' +
-                    "'mario'" +
+                    "'" +
+                    element +
+                    "'" +
                     ')">elabora</button>';
             }
 
@@ -384,10 +400,88 @@
                             1 * document.getElementById(i + "|" + j).value;
                     }
                 }
-                elaboraTabella(tabella);
-                scriviTabella(tabella, element, "roberto");
+                elaboraTabella(tabella, element);
+                scriviTabella(tabella, "roberto");
                 table = tabella;
                 console.log(table);
+            }
+
+            function tastoGeneraTabella(element) {
+                const elemento = document.getElementById(element);
+                elemento.innerHTML = "";
+                elemento.innerHTML +=
+                    'costo minimo: <input type="number" id=min name=min value=1 />';
+                elemento.innerHTML += "<br/>";
+                elemento.innerHTML +=
+                    'costo massimo: <input type="number" id=max name=max value=100 />';
+                elemento.innerHTML += "<br/>";
+                elemento.innerHTML +=
+                    'quantità minima: <input type="number" id=minT name=minT value=1 />';
+                elemento.innerHTML += "<br/>";
+                elemento.innerHTML +=
+                    'quantità massima: <input type="number" id=maxT name=maxT value=999 />';
+                elemento.innerHTML += "<br/><br/>";
+                elemento.innerHTML +=
+                    '<button onclick="generaTabella(' +
+                    "'" +
+                    element +
+                    "'" +
+                    ')">genera</button>';
+            }
+
+            function generaTabella(element) {
+                const elemento = document.getElementById(element);
+                let w = document.getElementById("w").value;
+                let h = document.getElementById("h").value;
+
+                let min = document.getElementById("min").value;
+                let max = document.getElementById("max").value;
+
+                let minT = document.getElementById("minT").value;
+                let maxT = document.getElementById("maxT").value;
+
+                let tabella = [];
+                let ultimaColonna = [];
+                let ultimaRiga = [];
+                let totV = 0;
+                let totO = 0;
+                let tot = 0;
+                for (let i = 0; i < h; i++) {
+                    tabella[i] = [];
+                    for (let j = 0; j < w; j++) {
+                        tabella[i][j] = Math.floor(
+                            Math.random() * (max - min) + min
+                        );
+                    }
+                }
+                for (let i = 0; i < h; i++) {
+                    let temp = Math.floor(Math.random() * maxT);
+                    ultimaColonna[i] = temp;
+                    totV += temp;
+                }
+                console.log(ultimaColonna);
+                for (let i = 0; i < w; i++) {
+                    let temp = Math.floor(Math.random() * maxT);
+                    ultimaRiga[i] = temp;
+                    totO += temp;
+                }
+                console.log(ultimaRiga);
+                if (totO > totV) {
+                    ultimaColonna[h - 1] += totO - totV;
+                    tot = totO;
+                } else if (totV > totO) {
+                    ultimaRiga[w - 1] += totV - totO;
+                    tot = totV;
+                } else {
+                    tot = totV;
+                }
+                for (let i = 0; i < h; i++) {
+                    tabella[i][w] = ultimaColonna[i];
+                }
+                ultimaRiga[w] = tot;
+                tabella[h] = ultimaRiga;
+                scriviTabella(tabella, element);
+                table = tabella;
             }
 
             var tot = 0;
@@ -408,34 +502,37 @@
             altezza tabella (numero unità produttive):
             <input type="number" id="h" name="h" min="2" max="100" value="2" />
         </p>
-        <div class="container">
-            <button onclick="inserisciTabella('mario')">
-                inserisci manualmente
-            </button>
-            <p id="mario"></p>
+        <div class="francesco">
+            <div class="container">
+                <button onclick="inserisciTabella('mario')">
+                    inserisci manualmente
+                </button>
+                <p id="roberto"></p>
+                <p id="mario"></p>
+            </div>
+            <div class="container">
+                <button onclick="tastoGeneraTabella('carlo')">
+                    genera casualmente
+                </button>
+                <p id="carlo"></p>
+            </div>
         </div>
-        <div class="container">
-            <button onclick="generaTabella('carlo')">genera casualmente</button>
-            <p id="carlo"></p>
-        </div>
-        <!--<div>
-            <button onclick="scriviTabella(tabella,'tabellaOut')">
-                genera tabella
-            </button>
-            <p id="tabellaOut"></p>
-        </div>-->
+
         <br />
-        <div class="container">
-            <button onclick="nordOvest(table,'giorgio')">
-                metodo nord ovest
-            </button>
-            <p id="giorgio"></p>
-        </div>
-        <div class="container">
-            <button onclick="minimiCosti(table,'fabio')">
-                metodo dei minimi costi
-            </button>
-            <p id="fabio"></p>
+        <br />
+        <div class="francesco">
+            <div class="container">
+                <button onclick="nordOvest(table,'giorgio')">
+                    metodo nord ovest
+                </button>
+                <p id="giorgio"></p>
+            </div>
+            <div class="container">
+                <button onclick="minimiCosti(table,'fabio')">
+                    metodo dei minimi costi
+                </button>
+                <p id="fabio"></p>
+            </div>
         </div>
     </body>
 </html>
